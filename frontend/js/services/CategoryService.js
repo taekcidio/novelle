@@ -38,11 +38,12 @@ export const CategoryService = {
   },
 
   findForStory(story, categories = []) {
-    return categories.find(category => (
-      category.id === story.category_id
-      || category.id === story.category
-      || getCategorySlug(category) === normalizeCategoryName(story.category)
-      || normalizeCategoryName(category.name) === normalizeCategoryName(story.categoryName)
+    const source = Array.isArray(categories) ? categories : [];
+    return source.find(category => (
+      category.id === story?.category_id
+      || category.id === story?.category
+      || getCategorySlug(category) === normalizeCategoryName(story?.category)
+      || normalizeCategoryName(category.name) === normalizeCategoryName(story?.categoryName)
     )) || null;
   },
 

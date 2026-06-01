@@ -38,8 +38,8 @@ export const ExplorePage = {
     initNavbar();
     initSidebar();
 
-    const categories = await CategoryService.getAll();
-    const allStories = await StoryService.getAll();
+    const categories = await safeLoad('Explore categories', () => CategoryService.getAll());
+    const allStories = await safeLoad('Explore stories', () => StoryService.getAll());
     console.log('[Novelle Explore] stories count', allStories.length);
     await FavoritesService.load().catch(() => {});
     const queryParams = router.getQuery();
@@ -78,11 +78,12 @@ export const ExplorePage = {
 function renderFilterChips(categories, activeCategory) {
   const filters = document.getElementById('explore-filters');
   if (!filters) return;
+  const safeCategories = Array.isArray(categories) ? categories : [];
 
   const isAllActive = !activeCategory || activeCategory === 'all';
   filters.innerHTML = `
     <button class="chip ${isAllActive ? 'active' : ''}" data-filter="all">Todas</button>
-    ${categories.map(category => {
+    ${safeCategories.map(category => {
       const slug = getCategorySlug(category) || category.id;
       const isActive = storyMatchesCategory(
         { category_id: category.id, category: slug, categoryName: category.name },
@@ -95,9 +96,11 @@ function renderFilterChips(categories, activeCategory) {
 }
 
 function filterStories(stories, categories, categoryRef = 'all', query = '') {
-  const normalizedQuery = query.trim().toLowerCase();
-  return stories.filter(story => {
-    const matchesCategory = storyMatchesCategory(story, categoryRef, categories);
+  const safeStories = Array.isArray(stories) ? stories : [];
+  const safeCategories = Array.isArray(categories) ? categories : [];
+  const normalizedQuery = String(query || '').trim().toLowerCase();
+  return safeStories.filter(story => {
+    const matchesCategory = storyMatchesCategory(story, categoryRef, safeCategories);
     const matchesQuery = !normalizedQuery
       || story.title?.toLowerCase().includes(normalizedQuery)
       || story.description?.toLowerCase().includes(normalizedQuery)
@@ -146,8 +149,9 @@ function normalizeCategoryAlias(value) {
 function renderGrid(stories, categoryScoped = false) {
   const grid = document.getElementById('explore-grid');
   if (!grid) return;
+  const safeStories = Array.isArray(stories) ? stories : [];
 
-  if (stories.length === 0) {
+  if (safeStories.length === 0) {
     grid.innerHTML = `
       <div class="empty-state" style="grid-column:1/-1">
         <div class="empty-state__icon">${icon('search')}</div>
@@ -158,7 +162,7 @@ function renderGrid(stories, categoryScoped = false) {
     return;
   }
 
-  const cards = renderStoryCards(stories);
+  const cards = renderStoryCards(safeStories);
   console.log('[Novelle Explore] rendered count', countRenderedCards(cards));
   grid.innerHTML = cards.trim() ? cards : `
     <div class="empty-state" style="grid-column:1/-1">
@@ -167,6 +171,16 @@ function renderGrid(stories, categoryScoped = false) {
       <p class="empty-state__text">No pudimos mostrar historias con esos datos.</p>
     </div>
   `;
+}
+
+async function safeLoad(label, loader) {
+  try {
+    const result = await loader();
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error(`[Novelle Explore] ${label} failed`, error);
+    return [];
+  }
 }
 
 function countRenderedCards(html) {

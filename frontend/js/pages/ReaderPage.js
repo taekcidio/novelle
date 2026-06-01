@@ -103,8 +103,13 @@ export const ReaderPage = {
   async init(params) {
     isReaderLoading = false;
     initReaderSettings();
-    const storyId = params.id;
+    const storyId = String(params?.id || '').trim();
     const sceneParam = router.getQuery().scene;
+
+    if (!storyId) {
+      renderEmptyScene('No encontramos la historia solicitada.');
+      return;
+    }
 
     const story = await StoryService.getById(storyId);
     if (!story) {
@@ -272,7 +277,7 @@ function renderScene(scene, story) {
     return `<p>${escapeHtml(paragraph)}</p>`;
   }).join('');
 
-  const decisions = scene.decisions || [];
+  const decisions = Array.isArray(scene.decisions) ? scene.decisions : [];
   const decisionsHTML = decisions.length
     ? `
       <div class="reader__decision-prompt">Que decides hacer?</div>
@@ -661,11 +666,16 @@ async function hydrateGeneratedChoices(scene, story) {
   if (!optionsContainer) return;
 
   const user = store.get('user');
-  const choices = await StoryService.generateChoices({
-    storyId: story.id,
-    currentSceneId: scene.id,
-    userId: user?.id || null,
-  });
+  let choices = [];
+  try {
+    choices = await StoryService.generateChoices({
+      storyId: story.id,
+      currentSceneId: scene.id,
+      userId: user?.uid || user?.id || null,
+    });
+  } catch (error) {
+    console.error('[Novelle Reader] generated choices failed', error);
+  }
   const finalChoices = choices.length >= 3 ? choices : [
     'Seguir la pista antes de que desaparezca',
     'Confrontar lo que se oculta en la escena',

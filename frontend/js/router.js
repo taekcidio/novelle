@@ -88,7 +88,12 @@ export class Router {
 
     for (let i = 0; i < patternParts.length; i++) {
       if (patternParts[i].startsWith(':')) {
-        params[patternParts[i].slice(1)] = decodeURIComponent(pathParts[i]);
+        try {
+          params[patternParts[i].slice(1)] = decodeURIComponent(pathParts[i]);
+        } catch (error) {
+          params[patternParts[i].slice(1)] = pathParts[i];
+          console.error('[Novelle Router] Error decoding route param', { pattern, path, error });
+        }
       } else if (patternParts[i] !== pathParts[i]) {
         return null;
       }
@@ -113,14 +118,17 @@ export class Router {
     const previousRoute = this.currentRoute;
 
     if (match) {
-      const { handler, params } = match;
+      const { handler, params, pattern } = match;
+      const pageName = getPageName(handler, pattern);
       this.currentRoute = path;
+      console.log('[Novelle Router] route start', { path, pattern, page: pageName, params });
 
       // Page transition
       this.container.classList.add('page-exit');
 
       await new Promise(resolve => setTimeout(resolve, 200));
 
+      let didRender = false;
       try {
         // Render
         const html = typeof handler.render === 'function'
@@ -128,9 +136,23 @@ export class Router {
           : handler(params);
 
         this.container.innerHTML = html;
+        didRender = true;
         this.container.classList.remove('page-exit');
         this.container.classList.add('page-enter');
+      } catch (error) {
+        console.error('[Novelle Router] render error', { path, pattern, page: pageName, params, error });
+        this.container.classList.remove('page-exit', 'page-enter');
+        this.container.innerHTML = `
+          <div class="page--centered page--no-nav" style="text-align:center">
+            <h1 class="heading-1">No pudimos cargar esta pagina</h1>
+            <p class="text-secondary mt-4">Intenta volver al inicio y abrirla de nuevo.</p>
+            <a href="#/home" class="btn btn--primary mt-8">Volver al inicio</a>
+          </div>
+        `;
+      }
 
+      if (didRender) {
+        try {
         // Initialize page logic
         if (typeof handler.init === 'function') {
           await handler.init(params);
@@ -142,17 +164,14 @@ export class Router {
         setTimeout(() => {
           this.container.classList.remove('page-enter');
         }, 300);
-
       } catch (error) {
-        console.error('Router: Error rendering page', error);
-        this.container.classList.remove('page-exit', 'page-enter');
-        this.container.innerHTML = `
-          <div class="page--centered page--no-nav" style="text-align:center">
-            <h1 class="heading-1">No pudimos cargar esta pagina</h1>
-            <p class="text-secondary mt-4">Intenta volver al inicio y abrirla de nuevo.</p>
-            <a href="#/home" class="btn btn--primary mt-8">Volver al inicio</a>
-          </div>
-        `;
+          console.error('[Novelle Router] init error', { path, pattern, page: pageName, params, error });
+          this.container.classList.remove('page-exit', 'page-enter');
+          const fallbackSlot = this.container.querySelector('[data-page-error]');
+          if (fallbackSlot) {
+            fallbackSlot.textContent = 'No pudimos cargar algunos datos. Intenta actualizar en un momento.';
+          }
+        }
       }
 
     } else if (this.notFoundHandler) {
@@ -163,7 +182,11 @@ export class Router {
 
     // After guard
     if (this.afterEach) {
-      this.afterEach(path, previousRoute);
+      try {
+        this.afterEach(path, previousRoute);
+      } catch (error) {
+        console.error('[Novelle Router] afterEach error', { path, previousRoute, error });
+      }
     }
   }
 
@@ -191,3 +214,35 @@ export class Router {
 }
 
 export const router = new Router();
+
+function getPageName(handler, pattern = '') {
+  if (!handler) return routeToPageName(pattern);
+  if (handler.pageName) return handler.pageName;
+  if (handler.name) return handler.name;
+  if (handler.constructor?.name && handler.constructor.name !== 'Object') return handler.constructor.name;
+  return routeToPageName(pattern);
+}
+
+function routeToPageName(pattern = '') {
+  const names = {
+    '/': 'HomePage',
+    '/splash': 'SplashPage',
+    '/login': 'LoginPage',
+    '/register': 'RegisterPage',
+    '/home': 'HomePage',
+    '/explore': 'ExplorePage',
+    '/categories': 'CategoriesPage',
+    '/categories/:slug': 'ExplorePage',
+    '/story/:id': 'ReaderPage',
+    '/ending/:id': 'EndingPage',
+    '/profile': 'ProfilePage',
+    '/dashboard': 'DashboardPage',
+    '/favorites': 'FavoritesPage',
+    '/library': 'LibraryPage',
+    '/history': 'HistoryPage',
+    '/settings': 'SettingsPage',
+    '/create': 'CreateStoryPage',
+    '/edit-story/:id': 'EditStoryPage',
+  };
+  return names[pattern] || 'AnonymousRoute';
+}

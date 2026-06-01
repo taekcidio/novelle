@@ -73,6 +73,8 @@ function normalizeStory(story, categories = []) {
   if (!story) return null;
 
   const category = CategoryService.findForStory(story, categories);
+  const storyId = story.id || story.story_id || '';
+  const scenes = Array.isArray(story.scenes) ? story.scenes : [];
   const rawCategoryName = typeof story.categoryName === 'string' ? story.categoryName : '';
   const rawCategory = typeof story.category === 'string' ? story.category : '';
   const incomingCategoryName = rawCategoryName && rawCategoryName.toLowerCase() !== 'unknown'
@@ -96,16 +98,18 @@ function normalizeStory(story, categories = []) {
 
   return {
     ...story,
-    id: String(story.id),
+    id: String(storyId),
     cover_image: story.cover_image || story.cover || null,
-    cover: StoryCoverService.getLocalCover(story.id) || story.cover || story.cover_image || null,
+    cover: StoryCoverService.getLocalCover(storyId) || story.cover || story.cover_image || null,
     category: categorySlug,
     categoryName,
     readingTime: story.readingTime || story.reading_time || '0 min',
     endings: Number.isFinite(endingsCount) ? endingsCount : 0,
     rating: Number(story.rating ?? 0),
     readers: Number(story.readers ?? 0),
-    scenes_data: story.scenes_data || (story.scenes || []).map(normalizeScene),
+    scenes_data: Array.isArray(story.scenes_data)
+      ? story.scenes_data
+      : scenes.map(normalizeScene).filter(Boolean),
   };
 }
 
@@ -122,6 +126,7 @@ function isPublishedStory(story) {
 
 function normalizeScene(scene) {
   if (!scene) return null;
+  const decisions = Array.isArray(scene.decisions) ? scene.decisions : [];
 
   return {
     ...scene,
@@ -130,7 +135,7 @@ function normalizeScene(scene) {
     sceneOrder: scene.sceneOrder ?? scene.scene_order ?? scene.order ?? 0,
     isDecisionPoint: scene.isDecisionPoint ?? scene.is_decision_point ?? false,
     isEnding: scene.isEnding ?? scene.is_ending ?? false,
-    decisions: (scene.decisions || []).map(decision => ({
+    decisions: decisions.map(decision => ({
       ...decision,
       text: decision.text || decision.decision_text || 'Continuar',
       leadsTo: decision.leadsTo || decision.next_scene_id || decision.leads_to_scene || decision.leads_to_ending || decision.leads_to,

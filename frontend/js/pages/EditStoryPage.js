@@ -43,7 +43,12 @@ export const EditStoryPage = {
       return;
     }
 
-    const story = await StoryService.getById(storyId);
+    let story = null;
+    try {
+      story = await StoryService.getById(storyId);
+    } catch (error) {
+      console.error('[Novelle EditStory] story load failed', error);
+    }
 
     if (!story) {
       root.textContent = 'Historia no encontrada.';
@@ -151,7 +156,10 @@ async function bindForm(story) {
   const authorInput = document.getElementById('story-author');
   const deleteButton = document.getElementById('delete-story');
 
-  await loadCategories(story.category_id || '');
+    await loadCategories(story.category_id || '').catch(error => {
+      console.error('[Novelle EditStory] categories failed', error);
+      showCategoryLoadError('No pudimos cargar categorias. Intenta de nuevo en un momento.');
+    });
 
   coverInput?.addEventListener('change', updateCoverPreview);
   titleInput?.addEventListener('input', updateTextPreview);
@@ -318,7 +326,11 @@ async function loadCategories(selectedCategoryId) {
 async function canEditStory(story, storyId) {
   const userKey = getCurrentUserId();
   if (!userKey) return false;
-  const created = await StoryService.getMyCreated(userKey);
+  const created = await StoryService.getMyCreated(userKey).catch(error => {
+    console.error('[Novelle EditStory] created stories failed', error);
+    return [];
+  });
+  if (!Array.isArray(created)) return false;
   const wasCreatedByCurrentUser = created.some(item => item.id === storyId);
 
   if (story.user_id) {
@@ -326,6 +338,16 @@ async function canEditStory(story, storyId) {
   }
 
   return wasCreatedByCurrentUser;
+}
+
+function showCategoryLoadError(messageText) {
+  const select = document.getElementById('story-category');
+  const message = document.getElementById('category-message');
+  if (select) {
+    select.innerHTML = '<option value="">Sin categorias disponibles</option>';
+    select.disabled = true;
+  }
+  if (message) message.textContent = messageText;
 }
 
 function getCurrentUserId() {

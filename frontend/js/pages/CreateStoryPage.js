@@ -114,7 +114,10 @@ export const CreateStoryPage = {
 
     selectedCoverFile = null;
 
-    await loadCategories();
+    await loadCategories().catch(error => {
+      console.error('[Novelle CreateStory] categories failed', error);
+      showCategoryLoadError('No pudimos cargar categorias. Intenta de nuevo en un momento.');
+    });
 
     coverInput?.addEventListener('change', updateCoverPreview);
     titleInput?.addEventListener('input', updateTextPreview);
@@ -299,4 +302,14 @@ async function loadCategories() {
   ].join('');
   select.disabled = false;
   if (message) message.textContent = '';
+}
+
+function showCategoryLoadError(messageText) {
+  const select = document.getElementById('story-category');
+  const message = document.getElementById('category-message');
+  if (select) {
+    select.innerHTML = '<option value="">Sin categorias disponibles</option>';
+    select.disabled = true;
+  }
+  if (message) message.textContent = messageText;
 }

@@ -41,7 +41,7 @@ export const CategoriesPage = {
   async init() {
     initNavbar(); initSidebar();
     const grid = document.getElementById('categories-grid');
-    const categories = await CategoryService.getAll();
+    const categories = await safeArray('CategoriesPage categories', () => CategoryService.getAll());
 
     if (grid) {
       grid.innerHTML = categories.length
@@ -61,7 +61,8 @@ export const CategoriesPage = {
     }
 
     delegate(document, 'click', '.categories-page__card', (e, card) => {
-      router.navigate(`/categories/${card.dataset.category}`);
+      const category = card.dataset.category;
+      if (category) router.navigate(`/categories/${category}`);
     });
   },
 };
@@ -111,9 +112,9 @@ export const ProfilePage = {
   async init() {
     initNavbar(); initSidebar();
     ProgressService.loadCurrentUser();
-    await FavoritesService.load();
-    const favIds = FavoritesService.getAll();
-    const all = await StoryService.getAll();
+    await FavoritesService.load().catch(error => console.error('[Novelle Profile] favorites failed', error));
+    const favIds = safeList(FavoritesService.getAll());
+    const all = await safeArray('Profile favorites source', () => StoryService.getAll());
     const favStories = all.filter(s => favIds.includes(s.id));
     const grid = document.getElementById('profile-favs');
     if (grid) {
@@ -124,8 +125,8 @@ export const ProfilePage = {
     initEditProfileModal();
     const user = getProfileUser();
     const userKey = user?.uid || user?.id || user?.name || user?.username || 'Invitado';
-    const allStories = await StoryService.getAll();
-    const createdStories = await StoryService.getMyCreated(userKey);
+    const allStories = await safeArray('Profile stories', () => StoryService.getAll());
+    const createdStories = await safeArray('Profile created stories', () => StoryService.getMyCreated(userKey));
     updateCreatedStat(createdStories.length);
     updateProgressStats();
 
@@ -145,7 +146,7 @@ export const ProfilePage = {
       }
 
       if (tab === 'saved') {
-        const progress = ProgressService.getAllInProgress();
+        const progress = safeList(ProgressService.getAllInProgress());
         const savedIds = [...new Set(progress.map(item => item.storyId))];
         const saved = allStories.filter(story => savedIds.includes(story.id));
         content.innerHTML = `
@@ -155,7 +156,7 @@ export const ProfilePage = {
         return;
       }
 
-      const favoriteIds = FavoritesService.getAll();
+      const favoriteIds = safeList(FavoritesService.getAll());
       const favoriteStories = allStories.filter(story => favoriteIds.includes(story.id));
       content.innerHTML = `
         <div class="profile__section-head"><h2>Historias favoritas</h2></div>
@@ -186,7 +187,7 @@ function renderCreatedStoryCard(story) {
     return `
       <div class="profile-story">
         ${renderStoryCard(story)}
-        <button class="profile-story__edit btn btn--secondary btn--sm" data-story-id="${story.id}">Editar</button>
+        <button class="profile-story__edit btn btn--secondary btn--sm" data-story-id="${escapeAttr(story?.id)}">Editar</button>
       </div>
     `;
   } catch (error) {
@@ -528,7 +529,16 @@ export const LibraryPage = {
     `;
   },
   async init() {
-    await initLibraryPage();
+    try {
+      await initLibraryPage();
+    } catch (error) {
+      console.error('[Novelle Library] init failed', error);
+      initNavbar(); initSidebar();
+      const content = document.getElementById('library-content');
+      if (content) {
+        content.innerHTML = emptyLibraryState('Mi Biblioteca', 'No pudimos cargar tu biblioteca. Intenta de nuevo en un momento.');
+      }
+    }
     return;
     initNavbar(); initSidebar();
     await FavoritesService.load();
@@ -565,11 +575,11 @@ export const LibraryPage = {
 async function initLibraryPage() {
   initNavbar(); initSidebar();
   ProgressService.loadCurrentUser();
-  await FavoritesService.load();
-  const stories = await StoryService.getAll();
+  await FavoritesService.load().catch(error => console.error('[Novelle Library] favorites failed', error));
+  const stories = await safeArray('Library stories', () => StoryService.getAll());
   const user = getProfileUser();
   const userKey = user?.uid || user?.id || 'guest';
-  const createdStories = await StoryService.getMyCreated(userKey);
+  const createdStories = await safeArray('Library created stories', () => StoryService.getMyCreated(userKey));
   const content = document.getElementById('library-content');
   const storiesById = new Map(stories.map(story => [story.id, story]));
   const storiesFromIds = (ids) => [...new Set(ids)]
@@ -583,7 +593,7 @@ async function initLibraryPage() {
   };
   const renderTab = (tabName) => {
     if (tabName === 'favorites') {
-      renderStories('Historias favoritas', storiesFromIds(FavoritesService.getAll()), 'Marca una historia como favorita para verla aqui.');
+      renderStories('Historias favoritas', storiesFromIds(safeList(FavoritesService.getAll())), 'Marca una historia como favorita para verla aqui.');
       return;
     }
 
@@ -595,7 +605,7 @@ async function initLibraryPage() {
     if (tabName === 'completed') {
       renderStories(
         'Historias finalizadas',
-        storiesFromIds(ProgressService.getCompleted().map(item => item.storyId)),
+        storiesFromIds(safeList(ProgressService.getCompleted()).map(item => item.storyId)),
         'Aun no tienes historias aqui.',
         { showProgress: true, progress: 100 }
       );
@@ -604,7 +614,7 @@ async function initLibraryPage() {
 
     renderStories(
       'Historias guardadas',
-      storiesFromIds(ProgressService.getAllInProgress().map(item => item.storyId)),
+      storiesFromIds(safeList(ProgressService.getAllInProgress()).map(item => item.storyId)),
       'Empieza a leer una historia para guardar tu progreso.',
       { showProgress: true, progress: 35 }
     );
@@ -618,6 +628,20 @@ async function initLibraryPage() {
     renderTab(tab.dataset.tab);
   });
   delegate(document, 'click', '.story-card', (e, c) => router.navigate(`/story/${c.dataset.storyId}`));
+}
+
+async function safeArray(label, loader) {
+  try {
+    const result = await loader();
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error(`[Novelle Page] ${label} failed`, error);
+    return [];
+  }
+}
+
+function safeList(value) {
+  return Array.isArray(value) ? value : [];
 }
 
 function emptyLibraryState(title, message) {

@@ -69,9 +69,9 @@ export const HomePage = {
     initNavbar();
     initSidebar();
 
-    const categories = await CategoryService.getAll();
-    const stories = await StoryService.getAll();
-    const featured = await StoryService.getFeatured();
+    const categories = await safeLoad('Home categories', () => CategoryService.getAll());
+    const stories = await safeLoad('Home stories', () => StoryService.getAll());
+    const featured = await safeLoad('Home featured stories', () => StoryService.getFeatured());
     console.log('[Novelle Home] stories count', stories.length);
     await FavoritesService.load().catch(() => {});
     const inProgress = ProgressService.getAllInProgress();
@@ -79,7 +79,8 @@ export const HomePage = {
 
     // Continue reading
     const continueSection = document.getElementById('continue-section');
-    if (inProgress.length > 0) {
+    const continueGrid = document.getElementById('continue-grid');
+    if (inProgress.length > 0 && continueGrid) {
       const continueCards = inProgress.slice(0, 3).map(p => {
         const story = stories.find(s => s.id === p.storyId);
         if (!story) return '';
@@ -89,20 +90,22 @@ export const HomePage = {
           return '';
         }
       }).join('');
-      document.getElementById('continue-grid').innerHTML = continueCards;
-    } else {
+      continueGrid.innerHTML = continueCards;
+    } else if (continueSection) {
       continueSection.style.display = 'none';
     }
 
     // Featured
     const featuredCards = renderCardsOrEmpty(featured, { featured: false });
     console.log('[Novelle Home] featured rendered count', countRenderedCards(featuredCards));
-    document.getElementById('featured-grid').innerHTML = featuredCards;
+    const featuredGrid = document.getElementById('featured-grid');
+    if (featuredGrid) featuredGrid.innerHTML = featuredCards;
 
     // All stories
     const storyCards = renderCardsOrEmpty(stories);
     console.log('[Novelle Home] all stories rendered count', countRenderedCards(storyCards));
-    document.getElementById('all-stories-grid').innerHTML = storyCards;
+    const allStoriesGrid = document.getElementById('all-stories-grid');
+    if (allStoriesGrid) allStoriesGrid.innerHTML = storyCards;
 
     // Card clicks
     delegate(document, 'click', '.story-card', (e, card) => {
@@ -119,20 +122,32 @@ export const HomePage = {
       const filtered = stories.filter(story => storyMatchesCategory(story, cat, categories));
       const filteredCards = renderCardsOrEmpty(filtered);
       console.log('[Novelle Home] filtered rendered count', cat, countRenderedCards(filteredCards));
-      document.getElementById('all-stories-grid').innerHTML = filteredCards;
+      const grid = document.getElementById('all-stories-grid');
+      if (grid) grid.innerHTML = filteredCards;
     });
 
     initScrollReveal();
   },
 };
 
+async function safeLoad(label, loader) {
+  try {
+    const result = await loader();
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error(`[Novelle Home] ${label} failed`, error);
+    return [];
+  }
+}
+
 function renderCategoryChips(categories) {
   const container = document.getElementById('home-categories');
   if (!container) return;
+  const safeCategories = Array.isArray(categories) ? categories : [];
 
   container.innerHTML = `
     <button class="chip active" data-category="all">Todas</button>
-    ${categories.map(category => `<button class="chip" data-category="${escapeHtml(getCategorySlug(category) || category.id)}">${escapeHtml(category.name)}</button>`).join('')}
+    ${safeCategories.map(category => `<button class="chip" data-category="${escapeHtml(getCategorySlug(category) || category.id)}">${escapeHtml(category.name)}</button>`).join('')}
   `;
 }
 
