@@ -72,6 +72,7 @@ export const HomePage = {
     const categories = await CategoryService.getAll();
     const stories = await StoryService.getAll();
     const featured = await StoryService.getFeatured();
+    console.log('[Novelle Home] stories count', stories.length);
     await FavoritesService.load().catch(() => {});
     const inProgress = ProgressService.getAllInProgress();
     renderCategoryChips(categories);
@@ -94,12 +95,14 @@ export const HomePage = {
     }
 
     // Featured
-    document.getElementById('featured-grid').innerHTML =
-      renderCardsOrEmpty(featured, { featured: false });
+    const featuredCards = renderCardsOrEmpty(featured, { featured: false });
+    console.log('[Novelle Home] featured rendered count', countRenderedCards(featuredCards));
+    document.getElementById('featured-grid').innerHTML = featuredCards;
 
     // All stories
-    document.getElementById('all-stories-grid').innerHTML =
-      renderCardsOrEmpty(stories);
+    const storyCards = renderCardsOrEmpty(stories);
+    console.log('[Novelle Home] all stories rendered count', countRenderedCards(storyCards));
+    document.getElementById('all-stories-grid').innerHTML = storyCards;
 
     // Card clicks
     delegate(document, 'click', '.story-card', (e, card) => {
@@ -114,8 +117,9 @@ export const HomePage = {
 
       const cat = chip.dataset.category;
       const filtered = stories.filter(story => storyMatchesCategory(story, cat, categories));
-      document.getElementById('all-stories-grid').innerHTML =
-        renderCardsOrEmpty(filtered);
+      const filteredCards = renderCardsOrEmpty(filtered);
+      console.log('[Novelle Home] filtered rendered count', cat, countRenderedCards(filteredCards));
+      document.getElementById('all-stories-grid').innerHTML = filteredCards;
     });
 
     initScrollReveal();
@@ -181,4 +185,8 @@ function renderEmptyStories() {
 function renderCardsOrEmpty(stories, options = {}) {
   const cards = renderStoryCards(stories, options);
   return cards.trim() ? cards : renderEmptyStories();
+}
+
+function countRenderedCards(html) {
+  return (html.match(/class="story-card/g) || []).length;
 }

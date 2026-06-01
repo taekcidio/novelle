@@ -109,6 +109,17 @@ function normalizeStory(story, categories = []) {
   };
 }
 
+function extractStoriesResponse(response) {
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response?.data)) return response.data;
+  if (Array.isArray(response?.stories)) return response.stories;
+  return [];
+}
+
+function isPublishedStory(story) {
+  return !story?.status || String(story.status).toLowerCase() === 'published';
+}
+
 function normalizeScene(scene) {
   if (!scene) return null;
 
@@ -131,7 +142,9 @@ function normalizeScene(scene) {
 
 async function getApiStories(endpoint) {
   try {
-    const stories = await api.get(endpoint);
+    const response = await api.get(endpoint);
+    console.log('[Novelle stories] raw response', endpoint, response);
+    const storyItems = extractStoriesResponse(response);
 
     let categories = [];
     try {
@@ -139,9 +152,9 @@ async function getApiStories(endpoint) {
     } catch (error) {
     }
 
-    return Array.isArray(stories)
-      ? stories.map(story => normalizeStory(story, categories)).filter(Boolean)
-      : [];
+    const normalizedStories = storyItems.map(story => normalizeStory(story, categories)).filter(Boolean);
+    console.log('[Novelle stories] normalized count', endpoint, normalizedStories.length);
+    return normalizedStories;
   } catch (error) {
     console.error('Error cargando historias.', endpoint, error);
     return [];
@@ -152,7 +165,7 @@ export const StoryService = {
   async getAll() {
     const stories = await getApiStories('/stories/');
     return Array.isArray(stories)
-      ? stories.filter(story => story.status === 'published')
+      ? stories.filter(isPublishedStory)
       : [];
   },
 

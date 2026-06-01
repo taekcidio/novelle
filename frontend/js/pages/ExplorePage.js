@@ -40,6 +40,7 @@ export const ExplorePage = {
 
     const categories = await CategoryService.getAll();
     const allStories = await StoryService.getAll();
+    console.log('[Novelle Explore] stories count', allStories.length);
     await FavoritesService.load().catch(() => {});
     const queryParams = router.getQuery();
     const query = queryParams.q || '';
@@ -158,6 +159,7 @@ function renderGrid(stories, categoryScoped = false) {
   }
 
   const cards = renderStoryCards(stories);
+  console.log('[Novelle Explore] rendered count', countRenderedCards(cards));
   grid.innerHTML = cards.trim() ? cards : `
     <div class="empty-state" style="grid-column:1/-1">
       <div class="empty-state__icon">${icon('search')}</div>
@@ -165,4 +167,8 @@ function renderGrid(stories, categoryScoped = false) {
       <p class="empty-state__text">No pudimos mostrar historias con esos datos.</p>
     </div>
   `;
+}
+
+function countRenderedCards(html) {
+  return (html.match(/class="story-card/g) || []).length;
 }

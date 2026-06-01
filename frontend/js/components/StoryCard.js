@@ -4,16 +4,6 @@ import { icon } from '../utils/icons.js';
 import { FavoritesService } from '../services/FavoriteService.js';
 import { displayText } from '../utils/helpers.js';
 
-const PLACEHOLDER_IMAGES = {
-  mystery: 'assets/placeholders/mystery.jpg',
-  scifi: 'assets/placeholders/scifi.jpg',
-  fantasy: 'assets/placeholders/fantasy.jpg',
-  horror: 'assets/placeholders/horror.jpg',
-  romance: 'assets/placeholders/romance.jpg',
-  drama: 'assets/placeholders/drama.jpg',
-  default: 'assets/placeholders/default.jpg',
-};
-
 const MAX_COVER_LENGTH = 2048;
 const MAX_LOCAL_DATA_COVER_LENGTH = 1500000;
 
@@ -104,7 +94,7 @@ function getCoverState(story, placeholderKey) {
   if (!isValidCover(cover)) {
     return {
       isPlaceholder: true,
-      src: PLACEHOLDER_IMAGES[placeholderKey] || PLACEHOLDER_IMAGES.default,
+      src: '',
     };
   }
 
@@ -120,8 +110,6 @@ function isValidCover(cover) {
   if (cover.length > MAX_COVER_LENGTH) return false;
   if (/[\u0000-\u001f"'<>`]/.test(cover)) return false;
   if (/^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(cover)) return true;
-  if (/^(assets|frontend\/assets)\/[\w./-]+\.(jpg|jpeg|png|webp|gif|svg)$/i.test(cover)) return true;
-  if (/^\/?assets\/[\w./-]+\.(jpg|jpeg|png|webp|gif|svg)$/i.test(cover)) return true;
   return false;
 }
 
