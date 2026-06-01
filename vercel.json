@@ -1,7 +1,6 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npx sass scss/main.scss:css/main.css --style=expanded",
-  "outputDirectory": ".",
+  "buildCommand": "",
+  "outputDirectory": "frontend",
   "rewrites": [
     {
       "source": "/(.*)",
