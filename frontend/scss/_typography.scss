@@ -1,0 +1,137 @@
+// ═══════════════════════════════════════
+// NOVELLE — Typography (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use 'variables' as *;
+
+// ─── Base Typography ─────────────────
+body {
+  font-family: $font-secondary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+  color: var(--text-primary);
+}
+
+// ─── Headings ────────────────────────
+.heading-1 {
+  font-family: $font-primary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-tight;
+}
+
+.heading-2 {
+  font-family: $font-display;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-tight;
+}
+
+.heading-3 {
+  font-family: $font-primary;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+}
+
+.heading-4 {
+  font-family: $font-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-normal;
+}
+
+.heading-5 {
+  font-family: $font-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+}
+
+// ─── Body Text ───────────────────────
+.text-lg   { font-size: $font-size-md;   line-height: $line-height-relaxed; }
+.text-base { font-size: $font-size-base; line-height: $line-height-normal;  }
+.text-sm   { font-size: $font-size-sm;   line-height: $line-height-normal;  }
+.text-xs   { font-size: $font-size-xs;   line-height: $line-height-normal;  }
+
+// ─── Reading Text ────────────────────
+.text-reading {
+  font-family: $font-secondary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-reading;
+  letter-spacing: 0.01em;
+}
+
+// ─── Utility Classes ─────────────────
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary  { color: var(--text-tertiary); }
+.text-accent    { color: var(--accent); }
+
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+
+.font-light     { font-weight: $font-weight-light; }
+.font-regular   { font-weight: $font-weight-regular; }
+.font-medium    { font-weight: $font-weight-medium; }
+.font-semibold  { font-weight: $font-weight-semibold; }
+.font-bold      { font-weight: $font-weight-bold; }
+
+.uppercase  { text-transform: uppercase; letter-spacing: $letter-spacing-wider; }
+.capitalize { text-transform: capitalize; }
+
+// ─── Special & Brand ─────────────────
+.brand-text {
+  font-family: $font-display;
+  font-weight: $font-weight-black;
+  letter-spacing: $letter-spacing-tight;
+  background: linear-gradient(135deg, $orange-400 0%, $orange-500 50%, $orange-700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-widest;
+  color: var(--text-secondary);
+}
+
+// ─── Gradient Text ───────────────────
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--text-primary) 50%,
+    var(--accent) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text--orange {
+  background: linear-gradient(135deg, $orange-300 0%, $orange-500 60%, $orange-700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ─── Editorial Font Class ────────────
+.font-editorial {
+  font-family: $font-primary;
+  font-style: normal;
+}
+
+.font-editorial--italic {
+  font-family: $font-primary;
+  font-style: italic;
+}

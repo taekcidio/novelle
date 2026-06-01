@@ -1,0 +1,143 @@
+// ═══════════════════════════════════════
+// NOVELLE — Animations (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use 'variables' as *;
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes progressFill {
+  from { width: 0%; }
+  to   { width: var(--progress, 0%); }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+// ─── NEW: Wattpad Premium Animations ─
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 14px rgba(167, 139, 250, 0.16); }
+  50%       { box-shadow: 0 0 26px rgba(167, 139, 250, 0.24); }
+}
+
+@keyframes glowText {
+  0%, 100% { text-shadow: 0 0 16px rgba(167, 139, 250, 0.18); }
+  50%       { text-shadow: 0 0 28px rgba(167, 139, 250, 0.28); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(167, 139, 250, 0.3); }
+  50%       { border-color: rgba(167, 139, 250, 0.7); }
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.7; }
+}
+
+// ─── Animation Classes ───────────────
+.anim-fade-in    { animation: fadeIn 0.4s ease forwards; }
+.anim-slide-up   { animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.anim-slide-down { animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.anim-scale-in   { animation: scaleIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.anim-float      { animation: float 3.5s ease-in-out infinite; }
+.anim-pulse      { animation: pulse 2.5s ease-in-out infinite; }
+.anim-glow       { animation: glow 3s ease-in-out infinite; }
+
+// Staggered children
+.stagger-children > * {
+  opacity: 0;
+  animation: cardReveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@for $i from 1 through 12 {
+  .stagger-children > *:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.07}s;
+  }
+}
+
+// Scroll reveal
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1), transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  &.revealed { opacity: 1; transform: translateY(0); }
+}
+
+// Page transitions
+.page-enter { animation: fadeIn 0.35s ease, slideUp 0.35s ease; }
+.page-exit  { animation: fadeOut 0.2s ease forwards; }
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

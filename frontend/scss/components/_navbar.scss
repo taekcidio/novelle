@@ -1,0 +1,296 @@
+// ═══════════════════════════════════════
+// NOVELLE — Navbar (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $navbar-height;
+  z-index: $z-navbar;
+  background: var(--navbar-bg);
+  @include glass(24px);
+  border-bottom: 1px solid var(--border-light);
+  @include transition(background, border-color, box-shadow);
+
+  [data-theme="dark"] & {
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03),
+                0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  @include lg { height: $navbar-height-lg; }
+
+  &__inner {
+    @include container;
+    height: 100%;
+    @include flex-between;
+  }
+
+  &__left, &__right {
+    @include flex(row, flex-start, center, $space-3);
+  }
+
+  &__right {
+    @media (max-width: #{$bp-sm}) {
+      gap: $space-2;
+    }
+  }
+
+  // ── Logo ──────────────────────────
+  &__logo {
+    font-family: $font-primary;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0;
+    cursor: pointer;
+    background: linear-gradient(135deg, $primary-light 0%, $primary 58%, $primary-dark 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: opacity $transition-base, filter $transition-base;
+
+    &:hover {
+      opacity: 0.85;
+      filter: brightness(1.1);
+    }
+  }
+
+  // ── Nav Links ─────────────────────
+  &__links {
+    @include flex(row, flex-start, center, $space-6);
+    display: none;
+    @include lg { display: flex; }
+
+    a {
+      font-family: $font-primary;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: var(--text-secondary);
+      @include transition(color);
+      position: relative;
+      padding-bottom: 3px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, $orange-500, $orange-400);
+        border-radius: $radius-full;
+        transition: width $transition-base;
+      }
+
+      &:hover {
+        color: var(--text-primary);
+        &::after { width: 100%; }
+      }
+
+      &.active {
+        color: var(--text-primary);
+        font-weight: $font-weight-semibold;
+        &::after { width: 100%; }
+      }
+    }
+  }
+
+  // ── Search ────────────────────────
+  &__search {
+    position: relative;
+    display: none;
+    @include md { display: block; }
+
+    input {
+      width: 200px;
+      padding: $space-2 $space-4;
+      padding-left: 38px;
+      background: var(--bg-secondary);
+      border-radius: $radius-full;
+      font-size: $font-size-sm;
+      border: 1.5px solid transparent;
+      color: var(--text-primary);
+      @include transition(width, background, border-color, box-shadow);
+
+      &::placeholder { color: var(--text-tertiary); }
+
+      &:focus {
+        width: 280px;
+        border-color: rgba(167, 139, 250, 0.4);
+        background: var(--bg-primary);
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.08);
+        outline: none;
+      }
+    }
+
+    svg {
+      position: absolute;
+      left: $space-3;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      @include square(16px);
+      pointer-events: none;
+    }
+  }
+
+  // ── Avatar ────────────────────────
+  &__avatar {
+    @include square(36px);
+    border-radius: $radius-full;
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    @include flex-center;
+    font-family: $font-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: box-shadow $transition-base, transform $transition-base;
+    overflow: hidden;
+    border: 1.5px solid transparent;
+
+    &:hover {
+      box-shadow: 0 0 0 2.5px $orange-500,
+                  0 4px 16px rgba(167, 139, 250, 0.25);
+      transform: scale(1.05);
+      border-color: transparent;
+    }
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+
+    @media (max-width: #{$bp-sm}) {
+      @include square(34px);
+      font-size: $font-size-xs;
+    }
+  }
+
+  &__user {
+    position: relative;
+  }
+
+  &__user-menu {
+    position: absolute;
+    top: calc(100% + #{$space-3});
+    right: 0;
+    width: 224px;
+    padding: $space-2;
+    background: rgba(20, 19, 26, 0.94);
+    border: 1px solid rgba(196, 181, 253, 0.14);
+    border-radius: $radius-xl;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transform-origin: top right;
+    transition: opacity $transition-base, transform $transition-base, visibility $transition-base;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    @media (max-width: #{$bp-sm}) {
+      right: -#{$space-12};
+      width: min(232px, calc(100vw - 24px));
+      border-radius: $radius-lg;
+    }
+  }
+
+  &__user-item {
+    width: 100%;
+    @include flex(row, flex-start, center, $space-3);
+    padding: $space-3 $space-3;
+    border-radius: $radius-md;
+    color: var(--text-secondary);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: background $transition-base, color $transition-base, transform $transition-base;
+
+    svg {
+      @include square(16px);
+      color: $primary-light;
+      opacity: 0.86;
+    }
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.10);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+
+    &--danger {
+      color: rgba(248, 113, 113, 0.92);
+
+      svg { color: rgba(248, 113, 113, 0.92); }
+    }
+  }
+
+  // ── Hamburger ─────────────────────
+  &__hamburger {
+    @include square(40px);
+    @include flex-center;
+    cursor: pointer;
+    border-radius: $radius-md;
+    @include transition(background);
+    @include lg { display: none; }
+
+    &:hover { background: var(--bg-secondary); }
+
+    span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-primary);
+      position: relative;
+      border-radius: $radius-full;
+      transition: background $transition-base;
+
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: var(--text-primary);
+        border-radius: $radius-full;
+        transition: transform $transition-base;
+      }
+      &::before { top: -6px; }
+      &::after  { bottom: -6px; }
+    }
+
+    &.active span {
+      background: transparent;
+      &::before { transform: rotate(45deg) translate(4px, 4px); }
+      &::after  { transform: rotate(-45deg) translate(4px, -4px); }
+    }
+  }
+
+  // ── Theme Toggle ──────────────────
+  &__theme-btn {
+    @include square(36px);
+    @include flex-center;
+    border-radius: $radius-full;
+    cursor: pointer;
+    @include transition(background, color);
+    color: var(--text-secondary);
+
+    &:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    svg { @include square(18px); }
+
+    @media (max-width: #{$bp-sm}) {
+      display: none;
+    }
+  }
+}

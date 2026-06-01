@@ -1,0 +1,244 @@
+// ═══════════════════════════════════════
+// NOVELLE — Input Component (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.form-group {
+  position: relative;
+  margin-bottom: $space-5;
+}
+
+.form-label {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: var(--text-secondary);
+  margin-bottom: $space-2;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  padding: $space-4 $space-5;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  color: var(--text-primary);
+  font-family: $font-secondary;
+  transition: border-color $transition-base,
+              background $transition-base,
+              box-shadow $transition-base;
+
+  &::placeholder {
+    color: var(--text-tertiary);
+    font-size: $font-size-sm;
+  }
+
+  &:hover {
+    border-color: var(--text-tertiary);
+  }
+
+  &:focus {
+    border-color: $orange-500;
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.12);
+    outline: none;
+  }
+
+  // Validation
+  &--valid {
+    border-color: $success;
+    &:focus { box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.12); }
+  }
+  &--invalid {
+    border-color: $error;
+    &:focus { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12); }
+  }
+}
+
+// ─── Floating Label ──────────────────
+.form-floating {
+  position: relative;
+
+  .form-input {
+    padding-top: $space-6;
+    padding-bottom: $space-3;
+
+    &::placeholder { color: transparent; }
+    &:focus::placeholder { color: var(--text-tertiary); }
+  }
+
+  .form-label {
+    position: absolute;
+    top: 50%;
+    left: $space-5;
+    transform: translateY(-50%);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-regular;
+    color: var(--text-tertiary);
+    pointer-events: none;
+    transition: all $transition-base;
+    margin-bottom: 0;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .form-input:focus ~ .form-label,
+  .form-input:not(:placeholder-shown) ~ .form-label {
+    top: $space-2;
+    transform: translateY(0);
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    color: $orange-500;
+    letter-spacing: $letter-spacing-wide;
+    text-transform: uppercase;
+  }
+}
+
+// ─── Input with Icon ─────────────────
+.form-input-icon {
+  position: relative;
+
+  .form-input { padding-left: 44px; }
+
+  svg, .input-icon {
+    position: absolute;
+    left: $space-4;
+    top: 50%;
+    transform: translateY(-50%);
+    @include square(18px);
+    color: var(--text-tertiary);
+    transition: color $transition-base;
+  }
+
+  &:focus-within svg,
+  &:focus-within .input-icon {
+    color: $orange-500;
+  }
+}
+
+.form-input-action {
+  position: absolute;
+  right: $space-3;
+  top: 50%;
+  transform: translateY(-50%);
+  @include square(32px);
+  @include flex-center;
+  border-radius: $radius-md;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  @include transition(color, background);
+  &:hover { color: var(--text-primary); background: var(--bg-secondary); }
+  svg { @include square(16px); }
+}
+
+// ─── Validation Messages ─────────────
+.form-message {
+  margin-top: $space-2;
+  font-size: $font-size-xs;
+  @include flex(row, flex-start, center, $space-1);
+  svg { @include square(14px); }
+
+  &--error   { color: $error; }
+  &--success { color: $success; }
+  &--info    { color: var(--text-secondary); }
+}
+
+// ─── Password Strength ───────────────
+.password-strength {
+  margin-top: $space-3;
+  @include flex(row, flex-start, center, $space-1);
+
+  &__bar {
+    flex: 1;
+    height: 3px;
+    background: var(--bg-tertiary);
+    border-radius: $radius-full;
+    @include transition(background);
+
+    &.active { background: $error; }
+    &.medium { background: $warning; }
+    &.strong { background: $success; }
+  }
+
+  &__text {
+    font-size: $font-size-xs;
+    color: var(--text-tertiary);
+    margin-left: $space-2;
+    min-width: 50px;
+  }
+}
+
+// ─── Textarea ────────────────────────
+textarea.form-input {
+  min-height: 120px;
+  resize: vertical;
+  padding-top: $space-4;
+  line-height: $line-height-relaxed;
+}
+
+// ─── Checkbox & Radio ────────────────
+.form-check {
+  @include flex(row, flex-start, center, $space-3);
+  cursor: pointer;
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    @include square(18px);
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    appearance: none;
+    cursor: pointer;
+    @include transition(background, border-color, box-shadow);
+    position: relative;
+    flex-shrink: 0;
+
+    &:checked {
+      background: $orange-500;
+      border-color: $orange-500;
+      box-shadow: 0 2px 8px rgba(167, 139, 250, 0.30);
+
+      &::after {
+        content: '✓';
+        @include absolute-center;
+        color: $white;
+        font-size: 11px;
+        font-weight: bold;
+        line-height: 1;
+      }
+    }
+
+    &:hover { border-color: $orange-500; }
+  }
+
+  input[type="radio"] {
+    border-radius: $radius-full;
+    &:checked::after { content: ''; @include square(8px); background: $white; border-radius: $radius-full; }
+  }
+
+  label {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+}
+
+// ─── Select ──────────────────────────
+select.form-input {
+  min-height: 52px;
+  padding-right: $space-12;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%23FF6122' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $space-4 center;
+  background-size: 18px 18px;
+  line-height: 1.25;
+  cursor: pointer;
+
+  &::-ms-expand { display: none; }
+}

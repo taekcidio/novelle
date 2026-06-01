@@ -1,0 +1,398 @@
+// ═══════════════════════════════════════
+// NOVELLE — Card Component (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+// ─── Base Card ───────────────────────
+.card {
+  background: var(--card-bg);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  @include transition(transform, box-shadow);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+  }
+}
+
+// ─── Story Card (Wattpad Premium) ────
+.story-card {
+  @extend .card;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-lg;
+  background: var(--card-bg);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-light);
+  transition: transform $transition-slow, box-shadow $transition-slow,
+              border-color $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    border-color: rgba(196, 181, 253, 0.20);
+  }
+
+  // ── Cover Image ───────────────────
+  &__cover {
+    aspect-ratio: 3 / 4;
+    background: $gray-900;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    border-radius: $radius-lg $radius-lg 0 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      position: relative;
+      z-index: 0;
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+                  filter 0.55s ease;
+      will-change: transform;
+    }
+
+    .story-card:hover & img {
+      transform: scale(1.035);
+      filter: brightness(0.9) saturate(1.05);
+    }
+
+    &--placeholder {
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.12), transparent 30%),
+        linear-gradient(145deg, #1E1A16 0%, #0D0D0D 100%);
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      &::before {
+        z-index: 0;
+        background:
+          radial-gradient(circle at 75% 72%, rgba(167, 139, 250, 0.08), transparent 40%);
+        opacity: 0.8;
+      }
+
+      &::after {
+        z-index: 1;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.06) 0%,
+          rgba(0, 0, 0, 0.28) 55%,
+          rgba(0, 0, 0, 0.72) 100%
+        );
+      }
+    }
+
+    &--mystery {
+      background:
+        radial-gradient(circle at 74% 22%, rgba(196, 181, 224, 0.22), transparent 28%),
+        linear-gradient(145deg, #13141f 0%, #1e2029 52%, #0b0c10 100%);
+    }
+
+    &--scifi {
+      background:
+        radial-gradient(circle at 72% 24%, rgba(98, 220, 255, 0.28), transparent 26%),
+        radial-gradient(circle at 26% 72%, rgba(167, 139, 250, 0.18), transparent 30%),
+        linear-gradient(145deg, #07131d 0%, #15364b 56%, #06080d 100%);
+    }
+
+    &--fantasy {
+      background:
+        radial-gradient(circle at 30% 28%, rgba(210, 255, 192, 0.20), transparent 28%),
+        radial-gradient(circle at 78% 70%, rgba(255, 140, 50, 0.15), transparent 32%),
+        linear-gradient(145deg, #102018 0%, #264333 52%, #0b110d 100%);
+    }
+
+    &--horror {
+      background:
+        radial-gradient(circle at 68% 28%, rgba(255, 80, 50, 0.25), transparent 26%),
+        linear-gradient(145deg, #1a0a0a 0%, #2e1010 48%, #080607 100%);
+    }
+
+    &--romance {
+      background:
+        radial-gradient(circle at 30% 26%, rgba(255, 180, 180, 0.25), transparent 28%),
+        radial-gradient(circle at 78% 70%, rgba(167, 139, 250, 0.18), transparent 30%),
+        linear-gradient(145deg, #321722 0%, #533044 52%, #151014 100%);
+    }
+
+    &--drama {
+      background:
+        radial-gradient(circle at 30% 22%, rgba(255, 200, 120, 0.22), transparent 28%),
+        linear-gradient(145deg, #1c1715 0%, #3a302b 52%, #0c0b0a 100%);
+    }
+
+    &--default {
+      background:
+        radial-gradient(circle at 72% 22%, rgba(167, 139, 250, 0.15), transparent 26%),
+        linear-gradient(145deg, #17151d 0%, #2a2833 52%, #0d0d10 100%);
+    }
+  }
+
+  // ── Gradient Overlay ──────────────
+  &__overlay {
+    @include absolute-fill;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.20) 40%,
+      rgba(0, 0, 0, 0.05) 65%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity $transition-base;
+  }
+
+  .story-card:hover &__overlay {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.90) 0%,
+      rgba(0, 0, 0, 0.25) 40%,
+      rgba(0, 0, 0, 0.08) 65%,
+      rgba(0, 0, 0, 0.20) 100%
+    );
+  }
+
+  // ── Content Over Cover ────────────
+  &__cover-content {
+    @include absolute-fill;
+    z-index: 2;
+    @include flex(column, space-between);
+    padding: $space-4;
+    pointer-events: none;
+  }
+
+  // ── Category Badge ────────────────
+  &__badge {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 8px;
+    border-radius: $radius-full;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(20, 19, 26, 0.58);
+    color: $white;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(196, 181, 253, 0.22);
+    pointer-events: none;
+  }
+
+  // ── Bottom Info on Cover ──────────
+  &__cover-bottom {
+    @include flex(row, flex-start, center, $space-2);
+    pointer-events: none;
+  }
+
+  &__endings {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.01em;
+  }
+
+  // ── Favorite Button ───────────────
+  &__fav {
+    position: absolute;
+    top: $space-3;
+    right: $space-3;
+    z-index: 3;
+    @include square(34px);
+    @include flex-center;
+    border-radius: $radius-full;
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform $transition-spring,
+                background $transition-base,
+                box-shadow $transition-base,
+                color $transition-base;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    svg { @include square(15px); }
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.18);
+      border-color: rgba(196, 181, 253, 0.34);
+      transform: scale(1.12);
+      color: $white;
+    }
+
+    &.is-active {
+      color: $orange-400;
+      background: rgba(167, 139, 250, 0.22);
+      box-shadow: 0 0 0 1.5px rgba(196, 181, 253, 0.38),
+                  0 4px 12px rgba(0, 0, 0, 0.22);
+      border-color: rgba(167, 139, 250, 0.35);
+
+      &:hover { transform: scale(1.15); }
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+  }
+
+  &:hover &__fav { opacity: 1; }
+
+  // ── Body ──────────────────────────
+  &__body {
+    padding: $space-4 $space-5 $space-5;
+    background: var(--card-bg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 140px;
+
+    @include lg {
+      padding: $space-5 $space-5 $space-6;
+    }
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    line-height: $line-height-tight;
+    @include text-clamp(2);
+    margin-bottom: $space-1;
+    min-height: 2.4em;
+    color: var(--text-primary);
+    letter-spacing: 0;
+
+    @include lg {
+      font-size: $font-size-md;
+    }
+  }
+
+  &__author {
+    font-size: $font-size-xs;
+    color: var(--text-secondary);
+    margin-bottom: $space-3;
+    font-weight: $font-weight-regular;
+    @include text-truncate;
+    letter-spacing: 0.01em;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $space-4);
+    flex-wrap: wrap;
+    font-size: $font-size-xs;
+    color: var(--text-tertiary);
+    margin-top: auto;
+
+    span {
+      @include flex(row, flex-start, center, $space-1);
+    }
+
+    svg {
+      @include square(13px);
+      opacity: 0.7;
+    }
+  }
+
+  // ── Progress Bar ──────────────────
+  &__progress {
+    margin-top: $space-3;
+    height: 3px;
+    background: var(--bg-tertiary);
+    border-radius: $radius-full;
+    overflow: hidden;
+
+    &-fill {
+      height: 100%;
+      background: linear-gradient(90deg, $orange-600, $orange-400);
+      border-radius: $radius-full;
+      transition: width $transition-slow;
+      box-shadow: none;
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+// Horizontal Variant (Continue Reading)
+// ═══════════════════════════════════════
+.story-card--horizontal {
+  @include flex(row);
+  border-radius: $radius-xl;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+
+  &:hover {
+    border-color: rgba(196, 181, 253, 0.18);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  }
+
+  .story-card__cover {
+    width: 110px;
+    min-height: 145px;
+    aspect-ratio: auto;
+    flex-shrink: 0;
+    border-radius: $radius-xl 0 0 $radius-xl;
+
+    @include md { width: 150px; min-height: 165px; }
+  }
+
+  .story-card__overlay {
+    background: linear-gradient(
+      90deg,
+      transparent 50%,
+      rgba(0, 0, 0, 0.25) 100%
+    );
+  }
+
+  .story-card__cover-content { display: none; }
+  .story-card__fav { display: none; }
+
+  .story-card__body {
+    flex: 1;
+    @include flex-column;
+    justify-content: center;
+    min-width: 0;
+    padding: $space-4 $space-5;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// ═══════════════════════════════════════
+// Featured Variant
+// ═══════════════════════════════════════
+.story-card--featured {
+  .story-card__cover {
+    @include aspect-ratio(16, 10);
+  }
+
+  .story-card__title {
+    font-size: $font-size-lg;
+    @include lg { font-size: $font-size-xl; }
+  }
+
+  .story-card__badge {
+    font-size: $font-size-xs;
+    padding: $space-2 $space-4;
+  }
+}

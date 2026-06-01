@@ -1,0 +1,176 @@
+// ═══════════════════════════════════════
+// NOVELLE — Base Styles (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ─── CSS Custom Properties (Theme) ───
+:root,
+[data-theme="light"] {
+  @each $key, $value in $theme-light {
+    --#{$key}: #{$value};
+  }
+  --primary:       #{$primary};
+  --primary-light: #{$primary-light};
+  --primary-dark:  #{$primary-dark};
+  --accent:        #{$accent};
+  --accent-light:  #{$accent};
+  --accent-dark:   #{$primary-dark};
+  --shadow-accent: 0 8px 28px rgba(167, 139, 250, 0.16);
+}
+
+[data-theme="dark"] {
+  @each $key, $value in $theme-dark {
+    --#{$key}: #{$value};
+  }
+  --primary:       #{$primary};
+  --primary-light: #{$primary-light};
+  --primary-dark:  #{$primary-dark};
+  --accent:        #{$accent};
+  --accent-light:  rgba(167, 139, 250, 0.12);
+  --accent-dark:   #{$primary-dark};
+  --shadow-accent: 0 8px 28px rgba(167, 139, 250, 0.18);
+}
+
+// ─── Body ────────────────────────────
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// ─── App Container ───────────────────
+#app {
+  min-height: 100vh;
+  position: relative;
+}
+
+// ─── Page Wrapper ────────────────────
+.page {
+  min-height: 100vh;
+  padding-top: $navbar-height;
+  @include lg { padding-top: $navbar-height-lg; }
+}
+
+.page--no-nav {
+  padding-top: 0;
+}
+
+.page--centered {
+  @include flex-center;
+  min-height: 100vh;
+  padding: $space-4;
+}
+
+// ─── Container ───────────────────────
+.container {
+  @include container;
+}
+
+.container--sm      { @include container($container-sm); }
+.container--md      { @include container($container-md); }
+.container--lg      { @include container($container-lg); }
+.container--reading { @include container($reading-width); }
+
+// ─── Sections ────────────────────────
+.section {
+  padding: $space-12 0;
+  @include md { padding: $space-16 0; }
+}
+
+.section__header {
+  margin-bottom: $space-8;
+  @include md { margin-bottom: $space-10; }
+}
+
+.section__title {
+  font-family: $font-display;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: $letter-spacing-tight;
+  @include md { font-size: $font-size-2xl; }
+}
+
+.section__subtitle {
+  color: var(--text-secondary);
+  margin-top: $space-2;
+  font-size: $font-size-sm;
+  @include md { font-size: $font-size-base; }
+}
+
+// ─── Divider ─────────────────────────
+.divider {
+  height: 1px;
+  background: var(--border);
+  border: none;
+  margin: $space-8 0;
+}
+
+// ─── Toast Container ─────────────────
+#toast-container {
+  position: fixed;
+  top: $space-4;
+  right: $space-4;
+  z-index: $z-toast;
+  @include flex-column;
+  gap: $space-3;
+  pointer-events: none;
+
+  & > * { pointer-events: auto; }
+}
+
+// ─── Modal Container ─────────────────
+#modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+  pointer-events: none;
+  &.active { pointer-events: auto; }
+}
+
+// ─── Selection Color ─────────────────
+::selection {
+  background: rgba(167, 139, 250, 0.25);
+  color: var(--text-primary);
+}
+
+// ─── Scrollbar (Global) ──────────────
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: $radius-full;
+  &:hover { background: var(--text-tertiary); }
+}
+
+// ─── Focus Visible ───────────────────
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+// ─── Utility Classes ─────────────────
+.hidden   { display: none !important; }
+.sr-only  { @include visually-hidden; }
+
+.mt-4  { margin-top: $space-4; }
+.mt-6  { margin-top: $space-6; }
+.mt-8  { margin-top: $space-8; }
+.mb-4  { margin-bottom: $space-4; }
+.mb-6  { margin-bottom: $space-6; }
+.mb-8  { margin-bottom: $space-8; }
+
+.gap-2 { gap: $space-2; }
+.gap-3 { gap: $space-3; }
+.gap-4 { gap: $space-4; }
+.gap-6 { gap: $space-6; }

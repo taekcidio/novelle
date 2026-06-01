@@ -1,0 +1,66 @@
+// ═══════════════════════════════════════
+// NOVELLE — Toast Component (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.toast {
+  @include flex(row, flex-start, center, $space-3);
+  padding: $space-4 $space-5;
+  background: var(--card-bg);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg, 0 0 0 1px rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  min-width: 280px;
+  max-width: 400px;
+  animation: slideInRight 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+  &--success { border-left: 3px solid $success; }
+  &--error   { border-left: 3px solid $error; }
+  &--warning { border-left: 3px solid $warning; }
+  &--info    { border-left: 3px solid $orange-500; }
+
+  &__icon {
+    @include square(20px);
+    flex-shrink: 0;
+  }
+
+  &__content { flex: 1; min-width: 0; }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  &__message {
+    font-size: $font-size-xs;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  &__close {
+    @include square(24px);
+    @include flex-center;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--text-tertiary);
+    @include transition(background, color);
+    &:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+  }
+
+  &.removing {
+    animation: slideOutRight 0.3s ease forwards;
+  }
+}
+
+@keyframes slideOutRight {
+  to { opacity: 0; transform: translateX(110%); }
+}

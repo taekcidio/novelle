@@ -1,0 +1,72 @@
+// ═══════════════════════════════════════
+// NOVELLE — Modal Component (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.modal-overlay {
+  @include absolute-fill;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: $z-modal;
+  @include flex-center;
+  padding: $space-4;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity $transition-base, visibility $transition-base;
+
+  &.active { opacity: 1; visibility: visible; }
+}
+
+.modal {
+  background: var(--card-bg);
+  border-radius: $radius-2xl;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.94) translateY(16px);
+  transition: transform $transition-slow;
+  @include scrollbar-thin;
+  box-shadow: $shadow-xl, 0 0 0 1px var(--border-light);
+
+  .modal-overlay.active & {
+    transform: scale(1) translateY(0);
+  }
+
+  &__header {
+    @include flex-between;
+    padding: $space-6 $space-6 0;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    letter-spacing: -0.01em;
+  }
+
+  &__close {
+    @include square(34px);
+    @include flex-center;
+    border-radius: $radius-full;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    @include transition(background, color);
+    &:hover {
+      background: rgba(167, 139, 250, 0.08);
+      color: $orange-400;
+    }
+  }
+
+  &__body { padding: $space-6; }
+
+  &__footer {
+    @include flex(row, flex-end, center, $space-3);
+    padding: $space-4 $space-6;
+    border-top: 1px solid var(--border-light);
+  }
+}

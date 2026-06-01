@@ -1,0 +1,160 @@
+// ═══════════════════════════════════════
+// NOVELLE — Sidebar (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.sidebar-overlay {
+  @include absolute-fill;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: $z-sidebar - 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity $transition-base, visibility $transition-base;
+
+  &.active { opacity: 1; visibility: visible; }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: $sidebar-width;
+  max-width: 88vw;
+  height: 100vh;
+  background: var(--bg-primary);
+  z-index: $z-sidebar;
+  transform: translateX(100%);
+  transition: transform $transition-slow;
+  @include flex-column;
+  border-left: 1px solid var(--border-light);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.3);
+
+  &.active { transform: translateX(0); }
+
+  @include lg { display: none; }
+
+  &__header {
+    @include flex-between;
+    padding: $space-5 $space-6;
+    border-bottom: 1px solid var(--border-light);
+
+    .logo {
+      font-family: $font-display;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-black;
+      letter-spacing: $letter-spacing-tight;
+      background: linear-gradient(135deg, $orange-400, $orange-500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  &__close {
+    @include square(36px);
+    @include flex-center;
+    border-radius: $radius-full;
+    cursor: pointer;
+    @include transition(background, color);
+    color: var(--text-secondary);
+    &:hover {
+      background: rgba(167, 139, 250, 0.10);
+      color: $orange-400;
+    }
+  }
+
+  &__user {
+    padding: $space-5 $space-6;
+    @include flex(row, flex-start, center, $space-3);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+  }
+
+  &__avatar {
+    @include square(44px);
+    border-radius: $radius-full;
+    background: linear-gradient(135deg, $orange-700, $orange-500);
+    @include flex-center;
+    font-weight: $font-weight-bold;
+    color: $white;
+    font-size: $font-size-sm;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(167, 139, 250, 0.25);
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__user-info {
+    min-width: 0;
+    .name {
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-sm;
+      @include text-truncate;
+      color: var(--text-primary);
+    }
+    .email {
+      font-size: $font-size-xs;
+      color: var(--text-secondary);
+      @include text-truncate;
+      margin-top: 2px;
+    }
+  }
+
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: $space-3 0;
+    @include scrollbar-thin;
+  }
+
+  &__link {
+    @include flex(row, flex-start, center, $space-3);
+    padding: $space-3 $space-5;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--text-secondary);
+    @include transition(color, background);
+    border-left: 3px solid transparent;
+    margin: 1px $space-3;
+    border-radius: $radius-md;
+
+    svg { @include square(20px); flex-shrink: 0; }
+
+    &:hover {
+      color: var(--text-primary);
+      background: rgba(167, 139, 250, 0.06);
+      border-left-color: rgba(167, 139, 250, 0.20);
+    }
+
+    &.active {
+      color: $orange-400;
+      background: rgba(167, 139, 250, 0.10);
+      border-left-color: $orange-500;
+      font-weight: $font-weight-semibold;
+
+      svg { color: $orange-400; }
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: $space-2 $space-6;
+  }
+
+  &__footer {
+    padding: $space-4 $space-6;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+  }
+}

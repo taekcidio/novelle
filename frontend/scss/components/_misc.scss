@@ -1,0 +1,339 @@
+// ═══════════════════════════════════════
+// NOVELLE — Misc Components (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+// ─── Avatar ──────────────────────────
+.avatar {
+  @include square(40px);
+  border-radius: $radius-full;
+  background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+  @include flex-center;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  color: $white;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+
+  &--sm  { @include square(32px); font-size: $font-size-xs; }
+  &--lg  { @include square(56px); font-size: $font-size-lg; }
+  &--xl  {
+    @include square(80px);
+    font-size: $font-size-2xl;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.24);
+  }
+  &--2xl {
+    @include square(120px);
+    font-size: $font-size-3xl;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.30),
+                0 0 0 4px var(--bg-primary),
+                0 0 0 6px rgba(196, 181, 253, 0.30);
+  }
+}
+
+// ─── Badge ───────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+
+  &--accent  {
+    background: rgba(167, 139, 250, 0.12);
+    color: $orange-400;
+    border: 1px solid rgba(167, 139, 250, 0.20);
+  }
+  &--success { background: rgba(74, 222, 128, 0.12); color: $success; }
+  &--warning { background: rgba(251, 191, 36, 0.12); color: $warning; }
+  &--error   { background: rgba(248, 113, 113, 0.12); color: $error; }
+}
+
+// ─── Tabs ────────────────────────────
+.tabs {
+  @include flex(row, flex-start, center, 0);
+  border-bottom: 1px solid var(--border-light);
+  overflow-x: auto;
+  @include scrollbar-hidden;
+  gap: $space-1;
+}
+
+.tab {
+  padding: $space-3 $space-4;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  border-radius: $radius-md $radius-md 0 0;
+  @include transition(color, background);
+  letter-spacing: 0.01em;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+    border-radius: $radius-full $radius-full 0 0;
+    transition: background $transition-base, transform $transition-base;
+    transform: scaleX(0);
+  }
+
+  &:hover {
+    color: var(--text-primary);
+    background: rgba(167, 139, 250, 0.06);
+  }
+
+  &.active {
+    color: var(--text-primary);
+    font-weight: $font-weight-semibold;
+
+    &::after {
+      background: linear-gradient(90deg, $orange-600, $orange-400);
+      transform: scaleX(1);
+    }
+  }
+}
+
+// ─── Toggle ──────────────────────────
+.toggle {
+  @include flex(row, flex-start, center, $space-3);
+  cursor: pointer;
+
+  &__switch {
+    width: 46px;
+    height: 26px;
+    background: var(--border);
+    border-radius: $radius-full;
+    position: relative;
+    @include transition(background, box-shadow);
+
+    &::after {
+      content: '';
+      @include square(20px);
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: $white;
+      border-radius: $radius-full;
+      transition: transform $transition-base;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.20);
+    }
+  }
+
+  input:checked + .toggle__switch {
+    background: $orange-500;
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.30);
+    &::after { transform: translateX(20px); }
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+  }
+
+  input { @include visually-hidden; }
+}
+
+// ─── Skeleton ────────────────────────
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: $radius-md;
+
+  &--text  { height: 16px; border-radius: $radius-sm; margin-bottom: $space-2; }
+  &--title { height: 24px; width: 60%; border-radius: $radius-sm; }
+  &--avatar { border-radius: $radius-full; }
+  &--card   { height: 280px; border-radius: $radius-xl; }
+  &--image  { @include aspect-ratio(3, 4); border-radius: $radius-xl; }
+}
+
+// ─── Dropdown ────────────────────────
+.dropdown {
+  position: relative;
+
+  &__trigger {
+    @include flex(row, flex-start, center, $space-2);
+    padding: $space-2 $space-4;
+    background: var(--bg-secondary);
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    @include transition(background, box-shadow);
+    border: 1px solid transparent;
+
+    &:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-light);
+    }
+
+    svg { @include square(16px); color: var(--text-tertiary); }
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + $space-2);
+    right: 0;
+    min-width: 200px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg, 0 0 0 1px rgba(0,0,0,0.04);
+    z-index: $z-dropdown;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.97);
+    transform-origin: top right;
+    transition: all $transition-base;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  &__item {
+    padding: $space-3 $space-4;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    @include transition(background, color);
+    @include flex(row, flex-start, center, $space-2);
+
+    &:hover {
+      background: rgba(167, 139, 250, 0.06);
+      color: var(--text-primary);
+    }
+
+    &:first-child { border-radius: $radius-lg $radius-lg 0 0; }
+    &:last-child  { border-radius: 0 0 $radius-lg $radius-lg; }
+
+    svg { @include square(16px); color: var(--text-tertiary); }
+  }
+}
+
+// ─── Category Chip ───────────────────
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  border: 1.5px solid var(--border-light);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background $transition-base,
+              border-color $transition-base,
+              color $transition-base,
+              box-shadow $transition-base,
+              transform $transition-base;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+
+  &:hover {
+    background: var(--bg-primary);
+    border-color: var(--border);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: $shadow-sm;
+  }
+
+  &.active {
+    background: $orange-500;
+    border-color: $orange-500;
+    color: $white;
+    box-shadow: 0 4px 16px rgba(167, 139, 250, 0.35);
+
+    &:hover {
+      background: $orange-600;
+      transform: translateY(-1px);
+    }
+  }
+
+  svg { @include square(14px); }
+}
+
+// ─── Empty State ─────────────────────
+.empty-state {
+  @include flex(column, center, center, $space-4);
+  padding: $space-16 $space-4;
+  text-align: center;
+  border: 1px solid var(--border-light);
+  border-radius: $radius-xl;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.09), transparent 38%),
+    rgba(255, 255, 255, 0.012);
+
+  &__icon {
+    @include square(58px);
+    color: $primary-light;
+    margin-bottom: $space-2;
+    opacity: 0.78;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: var(--text-secondary);
+    max-width: 360px;
+    line-height: $line-height-relaxed;
+  }
+
+  .btn {
+    margin-top: $space-2;
+  }
+}
+
+// ─── Toast ───────────────────────────
+.toast {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: $radius-lg;
+  padding: $space-4 $space-5;
+  box-shadow: $shadow-lg;
+  min-width: 280px;
+  max-width: 380px;
+  @include flex(row, flex-start, center, $space-3);
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &--success { border-left: 3px solid $success; }
+  &--error   { border-left: 3px solid $error; }
+  &--warning { border-left: 3px solid $warning; }
+  &--info    { border-left: 3px solid $orange-500; }
+
+  &__icon { @include square(20px); flex-shrink: 0; }
+  &__message {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    flex: 1;
+    color: var(--text-primary);
+  }
+}

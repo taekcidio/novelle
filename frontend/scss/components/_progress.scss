@@ -1,0 +1,84 @@
+// ═══════════════════════════════════════
+// NOVELLE — Progress Component (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+// ─── Reading Progress Bar (top) ──────
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: $z-navbar + 1;
+  background: transparent;
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, $orange-600, $orange-400, $orange-300);
+    border-radius: 0 $radius-full $radius-full 0;
+    transition: width 100ms linear;
+    width: 0%;
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.50);
+  }
+}
+
+// ─── Progress Bar (inline) ───────────
+.progress-bar {
+  height: 5px;
+  background: var(--bg-tertiary);
+  border-radius: $radius-full;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, $orange-600, $orange-400);
+    border-radius: $radius-full;
+    transition: width $transition-slow;
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.30);
+  }
+
+  &--sm { height: 3px; }
+  &--lg { height: 8px; }
+}
+
+// ─── Circular Progress ───────────────
+.progress-circle {
+  position: relative;
+  @include square(80px);
+
+  svg {
+    transform: rotate(-90deg);
+    @include square(100%);
+  }
+
+  &__bg {
+    fill: none;
+    stroke: var(--bg-tertiary);
+    stroke-width: 4;
+  }
+
+  &__fill {
+    fill: none;
+    stroke: $orange-500;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    transition: stroke-dashoffset $transition-slow;
+    filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.35));
+  }
+
+  &__text {
+    @include absolute-center;
+    font-family: $font-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $orange-400;
+  }
+
+  &--sm { @include square(48px); }
+  &--lg { @include square(120px); }
+}

@@ -1,0 +1,208 @@
+// ═══════════════════════════════════════
+// NOVELLE — Layout Styles (Wattpad Premium)
+// ═══════════════════════════════════════
+
+@use '../variables' as *;
+@use '../mixins' as *;
+
+// ─── Grid System ─────────────────────
+.grid   { display: grid; gap: $space-4; }
+.grid-2 { @include grid(1, $space-4); @include md { @include grid(2, $space-6); } }
+.grid-3 { @include grid(1, $space-4); @include md { @include grid(2, $space-5); } @include lg { @include grid(3, $space-6); } }
+.grid-4 { @include grid(2, $space-3); @include md { @include grid(3, $space-5); } @include lg { @include grid(4, $space-6); } }
+.grid-auto { @include grid-auto(260px, $space-6); }
+
+// ─── Auth Layout ─────────────────────
+.auth-layout {
+  min-height: 100vh;
+  @include flex(column, center, center);
+  background: var(--bg-primary);
+
+  @include lg {
+    @include flex(row);
+  }
+}
+
+.auth-layout__left {
+  flex: 1;
+  @include flex(column, center, center);
+  padding: $space-8 $space-4;
+  width: 100%;
+
+  @include lg {
+    max-width: 520px;
+    padding: $space-16 $space-12;
+    border-right: 1px solid var(--border-light);
+  }
+}
+
+.auth-layout__right {
+  display: none;
+
+  @include lg {
+    display: flex;
+    flex: 1;
+    position: relative;
+    min-height: 100vh;
+    @include flex-center;
+    padding: $space-16;
+    overflow: hidden;
+
+    // Cinematic dark background
+    background:
+      radial-gradient(ellipse at 25% 30%, rgba(167, 139, 250, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(167, 139, 250, 0.07) 0%, transparent 45%),
+      linear-gradient(160deg, #0F0C09 0%, #161210 40%, #0A0908 100%);
+
+    // Decorative grid lines
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(167, 139, 250, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(167, 139, 250, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    }
+
+    // Glow orb
+    &::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: $radius-full;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: glow 4s ease-in-out infinite;
+    }
+  }
+}
+
+// ─── Auth Form ───────────────────────
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-form__logo {
+  font-family: $font-primary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  text-align: center;
+  margin-bottom: $space-2;
+  letter-spacing: 0;
+  background: linear-gradient(135deg, $orange-400 0%, $orange-500 50%, $orange-600 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-form__subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: $font-size-sm;
+  margin-bottom: $space-10;
+  line-height: $line-height-relaxed;
+}
+
+.auth-form__divider {
+  @include flex(row, center, center, $space-4);
+  margin: $space-5 0;
+  color: var(--text-tertiary);
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: uppercase;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-light);
+  }
+}
+
+.auth-form__footer {
+  text-align: center;
+  margin-top: $space-6;
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+
+  a {
+    color: $orange-400;
+    font-weight: $font-weight-semibold;
+    @include transition(color, opacity);
+    &:hover {
+      color: $orange-300;
+      opacity: 0.9;
+    }
+  }
+}
+
+// ─── Auth Right Content ──────────────
+.auth-panel {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 400px;
+
+  &__icon {
+    margin: 0 auto $space-8;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: rgba(240, 237, 232, 0.95);
+    line-height: $line-height-tight;
+    letter-spacing: 0;
+    margin-bottom: $space-4;
+
+    span {
+      background: linear-gradient(135deg, $orange-400, $orange-300);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: rgba(154, 147, 140, 0.85);
+    line-height: $line-height-relaxed;
+  }
+
+  &__features {
+    margin-top: $space-8;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    text-align: left;
+  }
+
+  &__feature {
+    @include flex(row, flex-start, center, $space-3);
+    padding: $space-3 $space-4;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: $radius-lg;
+    backdrop-filter: blur(8px);
+
+    svg {
+      @include square(20px);
+      color: $orange-400;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: $font-size-sm;
+      color: rgba(240, 237, 232, 0.75);
+    }
+  }
+}

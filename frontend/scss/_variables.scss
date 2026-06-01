@@ -1,0 +1,186 @@
+// ═══════════════════════════════════════
+// NOVELLE — Design Tokens (Wattpad Premium Edition)
+// ═══════════════════════════════════════
+
+// ─── Base Colors ─────────────────────
+$white:          #FFFFFF;
+$black:          #0A0A0A;
+
+// ─── Gray Scale (Warm) ───────────────
+$gray-50:        #FAF9F8;
+$gray-100:       #F2F0EE;
+$gray-200:       #E6E2DD;
+$gray-300:       #D1CBC3;
+$gray-400:       #B0A89E;
+$gray-500:       #8C8278;
+$gray-600:       #6B6058;
+$gray-700:       #504840;
+$gray-800:       #352F28;
+$gray-900:       #1E1A16;
+
+// ─── Wattpad Orange Palette ──────────
+$primary:        #A78BFA;
+$primary-light:  #C4B5FD;
+$primary-dark:   #8B5CF6;
+$accent:         #F5F3FF;
+
+// Legacy accent aliases kept for existing component references.
+$orange-50:      $accent;
+$orange-100:     #EDE9FE;
+$orange-200:     #DDD6FE;
+$orange-300:     $primary-light;
+$orange-400:     $primary;
+$orange-500:     $primary;
+$orange-600:     $primary-dark;
+$orange-700:     #7C3AED;
+$orange-800:     #6D28D9;
+$orange-900:     #4C1D95;
+
+// ─── Semantic ────────────────────────
+$success:        #4ADE80;
+$warning:        #FBBF24;
+$error:          #F87171;
+$info:           #60A5FA;
+
+// ─── Light Theme ─────────────────────
+$theme-light: (
+  bg-primary:    #FAFAF9,
+  bg-secondary:  #F3F0ED,
+  bg-tertiary:   #EAE5DF,
+  text-primary:  #1A1612,
+  text-secondary: #6B6058,
+  text-tertiary: #A09790,
+  border:        #D8D0C8,
+  border-light:  #EAE5DF,
+  card-bg:       #FFFFFF,
+  card-shadow:   rgba(30, 20, 10, 0.07),
+  overlay:       rgba(10, 8, 6, 0.55),
+  accent:        $accent,
+  accent-light:  $accent,
+  accent-dark:   $primary-dark,
+  navbar-bg:     rgba(250, 250, 249, 0.88),
+  input-bg:      #F3F0ED,
+);
+
+// ─── Dark Theme (Wattpad Premium) ────
+$theme-dark: (
+  bg-primary:    #0D0D0D,
+  bg-secondary:  #161616,
+  bg-tertiary:   #1F1F1F,
+  text-primary:  #F0EDE8,
+  text-secondary: #9A938C,
+  text-tertiary: #5C5650,
+  border:        #2A2833,
+  border-light:  #211F2A,
+  card-bg:       #14131A,
+  card-shadow:   rgba(0, 0, 0, 0.45),
+  overlay:       rgba(0, 0, 0, 0.75),
+  accent:        $accent,
+  accent-light:  rgba(167, 139, 250, 0.12),
+  accent-dark:   $primary-dark,
+  navbar-bg:     rgba(13, 13, 13, 0.90),
+  input-bg:      #1A1714,
+);
+
+// ─── Typography ──────────────────────
+$font-primary:   'Inter', sans-serif;
+$font-secondary: 'Inter', sans-serif;
+$font-display:   'Inter', sans-serif;
+$font-editorial: 'Inter', sans-serif;
+
+$font-size-xs:   0.75rem;    // 12px
+$font-size-sm:   0.875rem;   // 14px
+$font-size-base: 1rem;       // 16px
+$font-size-md:   1.125rem;   // 18px
+$font-size-lg:   1.25rem;    // 20px
+$font-size-xl:   1.5rem;     // 24px
+$font-size-2xl:  2rem;       // 32px
+$font-size-3xl:  2.625rem;   // 42px
+$font-size-4xl:  3.25rem;    // 52px
+$font-size-5xl:  4rem;       // 64px
+
+$font-weight-light:    300;
+$font-weight-regular:  400;
+$font-weight-medium:   500;
+$font-weight-semibold: 600;
+$font-weight-bold:     700;
+$font-weight-black:    900;
+
+$line-height-tight:    1.15;
+$line-height-normal:   1.5;
+$line-height-relaxed:  1.7;
+$line-height-reading:  1.9;
+
+$letter-spacing-tight:  -0.025em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide:   0.02em;
+$letter-spacing-wider:  0.06em;
+$letter-spacing-widest: 0.1em;
+
+// ─── Spacing ─────────────────────────
+$space-unit: 4px;
+
+$space-1:  $space-unit;          // 4px
+$space-2:  $space-unit * 2;      // 8px
+$space-3:  $space-unit * 3;      // 12px
+$space-4:  $space-unit * 4;      // 16px
+$space-5:  $space-unit * 5;      // 20px
+$space-6:  $space-unit * 6;      // 24px
+$space-8:  $space-unit * 8;      // 32px
+$space-10: $space-unit * 10;     // 40px
+$space-12: $space-unit * 12;     // 48px
+$space-16: $space-unit * 16;     // 64px
+$space-20: $space-unit * 20;     // 80px
+$space-24: $space-unit * 24;     // 96px
+
+// ─── Border Radius ───────────────────
+$radius-sm:   6px;
+$radius-md:   10px;
+$radius-lg:   14px;
+$radius-xl:   20px;
+$radius-2xl:  28px;
+$radius-full: 9999px;
+
+// ─── Shadows ─────────────────────────
+$shadow-xs:     0 1px 3px rgba(0, 0, 0, 0.08);
+$shadow-sm:     0 2px 10px rgba(0, 0, 0, 0.12);
+$shadow-md:     0 6px 20px rgba(0, 0, 0, 0.16);
+$shadow-lg:     0 12px 40px rgba(0, 0, 0, 0.20);
+$shadow-xl:     0 24px 64px rgba(0, 0, 0, 0.28);
+$shadow-inner:  inset 0 2px 4px rgba(0, 0, 0, 0.06);
+$shadow-orange: 0 8px 28px rgba(167, 139, 250, 0.18);
+$shadow-orange-sm: 0 4px 14px rgba(167, 139, 250, 0.16);
+
+// ─── Breakpoints ─────────────────────
+$bp-xs:   375px;
+$bp-sm:   480px;
+$bp-md:   768px;
+$bp-lg:   1024px;
+$bp-xl:   1280px;
+$bp-2xl:  1440px;
+
+// ─── Z-Index ─────────────────────────
+$z-dropdown:  100;
+$z-sticky:    200;
+$z-navbar:    300;
+$z-sidebar:   400;
+$z-modal:     500;
+$z-toast:     600;
+$z-tooltip:   700;
+
+// ─── Transitions ─────────────────────
+$transition-fast:   150ms ease;
+$transition-base:   250ms ease;
+$transition-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// ─── Layout ──────────────────────────
+$navbar-height:     68px;
+$navbar-height-lg:  72px;
+$sidebar-width:     300px;
+$container-sm:      640px;
+$container-md:      768px;
+$container-lg:      1024px;
+$container-xl:      1240px;
+$container-2xl:     1440px;
+$reading-width:     740px;
