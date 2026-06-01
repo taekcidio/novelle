@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm install && npm run build:dev",
+  "installCommand": "npm install",
+  "buildCommand": "npx sass scss/main.scss:css/main.css --style=expanded",
   "outputDirectory": ".",
   "rewrites": [
     {
