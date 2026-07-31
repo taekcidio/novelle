@@ -310,11 +310,7 @@ Proyecto desarrollado por **Laura Valeria Espejo**, estudiante de Ingeniería de
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Laura%20Valeria-0A66C2?style=for-the-badge\&logo=linkedin\&logoColor=white)](https://www.linkedin.com/in/laura-valeria-espejo-mantilla-236597355/)
 [![Email](https://img.shields.io/badge/Email-valeriaespejo2006%40gmail.com-EA4335?style=for-the-badge\&logo=gmail\&logoColor=white)](mailto:valeriaespejo2006@gmail.com)
 
-## Licencia
 
-Este proyecto es de propiedad privada.
-
-Todos los derechos están reservados. No se autoriza su copia, distribución, modificación o uso comercial sin autorización previa de la autora.
 
 ---
 
